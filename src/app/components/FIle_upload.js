@@ -39,7 +39,7 @@ const FileUpload = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/evaluate",
+        "https://digital-factorys-backend.onrender.com/evaluate",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
