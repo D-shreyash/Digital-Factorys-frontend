@@ -9,6 +9,7 @@ const FileUpload = () => {
   const [sampleFile, setSampleFile] = useState(null);
   const [compareFile, setCompareFile] = useState(null);
   const [comparedData, setCompareData] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleSampleFileChange = (e) => {
     setSampleFile(e.target.files[0]);
@@ -32,6 +33,10 @@ const FileUpload = () => {
       alert("Please select a file type.");
       return;
     }
+
+    // Set loading to true before making the request
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("standardFile", sampleFile);
     formData.append("testFile", compareFile);
@@ -45,13 +50,12 @@ const FileUpload = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      // console.log("Files uploaded successfully:", response.data.evaluation);
-      // let differences = Array.isArray(response.data)
-      //   ? response.data
-      //   : Array.from(response.data);
       setCompareData(response.data.evaluation);
     } catch (error) {
       console.error("Error uploading files:", error);
+    } finally {
+      // Set loading to false after the request completes (whether success or failure)
+      setLoading(false);
     }
   };
 
@@ -118,6 +122,14 @@ const FileUpload = () => {
           </form>
         </div>
       </div>
+
+      {/* Show loading spinner if loading state is true */}
+      {loading ? (
+        <div className="flex justify-center items-center my-4">
+          <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-t-transparent border-blue-600"></div>
+        </div>
+      ) : null}
+
       {comparedData ? (
         <Differences differences={comparedData} />
       ) : (
